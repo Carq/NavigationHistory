@@ -5,11 +5,11 @@ using Xunit;
 
 namespace NavigationHistory.UnitTest.NavigationHistoryTests
 {
-    public class CanMoveBackTests : IDisposable
+    public class RecordTests : IDisposable
     {
         private Lib.NavigationHistory<TestNavigationItem> _navigationHistory;
 
-        public CanMoveBackTests()
+        public RecordTests()
         {
             _navigationHistory = new Lib.NavigationHistory<TestNavigationItem>();
         }
@@ -20,9 +20,14 @@ namespace NavigationHistory.UnitTest.NavigationHistoryTests
         }
 
         [Fact]
-        public void CanMoveBackShouldReturnFalse_WhenNoHistoryIsRecorded()
+        public void ShouldNotRecordDuplicatedItems()
         {
-            // given & when & then
+            // given
+            _navigationHistory.Record(new TestNavigationItem("1"));
+            _navigationHistory.Record(new TestNavigationItem("1"));
+            _navigationHistory.Record(new TestNavigationItem("1"));
+
+            // when & then
             _navigationHistory.CanMoveBack().Should().BeFalse();
         }
     }

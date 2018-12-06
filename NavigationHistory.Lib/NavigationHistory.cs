@@ -3,13 +3,11 @@ using System.Collections.Generic;
 
 namespace NavigationHistory.Lib
 {
-    public class NavigationHistory
+    public class NavigationHistory<TItem> where TItem : class, INavigationHistoryItem
     {
-        private readonly IList<INavigationHistoryItem> _backHistory;
+        private readonly IList<TItem> _backHistory;
 
-        private readonly IList<INavigationHistoryItem> _forwardHistory;
-
-        private INavigationHistoryItem _currentItem;
+        private readonly IList<TItem> _forwardHistory;
 
         public NavigationHistory() : this(10)
         {
@@ -18,18 +16,20 @@ namespace NavigationHistory.Lib
         public NavigationHistory(int maxHistorySize)
         {
             MaxHistorySize = maxHistorySize;
-            _backHistory = new List<INavigationHistoryItem>();
-            _forwardHistory = new List<INavigationHistoryItem>();
+            _backHistory = new List<TItem>();
+            _forwardHistory = new List<TItem>();
         }
 
         public int MaxHistorySize { get; }
 
-        public void Record(INavigationHistoryItem historyItemToRecord)
+        public TItem CurrentItem { get; private set; }
+
+        public void Record(TItem historyItemToRecord)
         {
             Record(historyItemToRecord, true);
         }
 
-        public INavigationHistoryItem Forward()
+        public TItem Forward()
         {
             if (!CanMoveForward())
             {
@@ -41,22 +41,22 @@ namespace NavigationHistory.Lib
             return lastForwardHistoryItem;
         }
 
-        private bool CanMoveForward()
+        public bool CanMoveForward()
         {
             return _forwardHistory.Count > 0;
         }
 
-        public INavigationHistoryItem Back()
+        public TItem Back()
         {
-            AddToForwardHistory(_currentItem);
+            AddToForwardHistory(CurrentItem);
 
             if (!CanMoveBack())
             {
                 return null;
             }
 
-            _currentItem = GetLastItemAndRemoteIt(_backHistory);
-            return _currentItem;
+            CurrentItem = GetLastItemAndRemoteIt(_backHistory);
+            return CurrentItem;
         }
 
         public bool CanMoveBack()
@@ -64,7 +64,7 @@ namespace NavigationHistory.Lib
             return _backHistory.Count > 0;
         }
 
-        private INavigationHistoryItem GetLastItemAndRemoteIt(IList<INavigationHistoryItem> history)
+        private TItem GetLastItemAndRemoteIt(IList<TItem> history)
         {
             if (history.Count < 1)
             {
@@ -76,7 +76,7 @@ namespace NavigationHistory.Lib
             return lastItem;
         }
 
-        private void AddToForwardHistory(INavigationHistoryItem historyItem)
+        private void AddToForwardHistory(TItem historyItem)
         {
             if (historyItem == null)
             {
@@ -87,7 +87,7 @@ namespace NavigationHistory.Lib
             RemoveOldHistoryItem(_forwardHistory);
         }
 
-        private void AddtoBackHistory(INavigationHistoryItem historyItem, bool cleanForwardHistory = true)
+        private void AddtoBackHistory(TItem historyItem, bool cleanForwardHistory = true)
         {
             _backHistory.Add(historyItem);
 
@@ -97,7 +97,7 @@ namespace NavigationHistory.Lib
             }
         }
 
-        private void RemoveOldHistoryItem(IList<INavigationHistoryItem> _forwardHistory)
+        private void RemoveOldHistoryItem(IList<TItem> _forwardHistory)
         {
             if (_forwardHistory.Count > MaxHistorySize)
             {
@@ -105,25 +105,25 @@ namespace NavigationHistory.Lib
             }
         }
 
-        private void Record(INavigationHistoryItem historyItemToRecord, bool cleanForwardHistory)
+        private void Record(TItem historyItemToRecord, bool cleanForwardHistory)
         {
             if (historyItemToRecord == null)
             {
                 throw new ArgumentNullException(nameof(historyItemToRecord));
             }
 
-            if (_currentItem == historyItemToRecord)
+            if (CurrentItem?.Identifier == historyItemToRecord.Identifier)
             {
                 return;
             }
 
-            if (_currentItem != null)
+            if (CurrentItem != null)
             {
-                AddtoBackHistory(_currentItem, cleanForwardHistory);
+                AddtoBackHistory(CurrentItem, cleanForwardHistory);
                 RemoveOldHistoryItem(_backHistory);
             }
 
-            _currentItem = historyItemToRecord;
+            CurrentItem = historyItemToRecord;
         }
     }
 }

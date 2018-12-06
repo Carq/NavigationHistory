@@ -7,23 +7,23 @@ namespace NavigationHistory.UnitTest.NavigationHistoryTests
 {
     public  class MaxHistorySizeTests : IDisposable
     {
-        private Lib.NavigationHistory _navigationHistory;
+        private Lib.NavigationHistory<TestNavigationItem> _navigationHistory;
 
         public MaxHistorySizeTests()
         {
-            _navigationHistory = new Lib.NavigationHistory();
+            _navigationHistory = new Lib.NavigationHistory<TestNavigationItem>();
         }
 
         public void Dispose()
         {
-            _navigationHistory = new Lib.NavigationHistory();
+            _navigationHistory = new Lib.NavigationHistory<TestNavigationItem>();
         }
 
         [Fact]
         public void ShouldRemoveOldHistoryItems_WhenHistoryCapacityHasBeenReached()
         {
             // given
-            var navigationHistory = new Lib.NavigationHistory(3);
+            var navigationHistory = new Lib.NavigationHistory<TestNavigationItem>(3);
 
             // when
             navigationHistory.Record(TestNavigationItems.HomePage);
@@ -43,7 +43,7 @@ namespace NavigationHistory.UnitTest.NavigationHistoryTests
         public void ShouldRemoveOldForwardHistoryItems_WhenHistoryCapacityHasBeenReached()
         {
             // given
-            var navigationHistory = new Lib.NavigationHistory(3);
+            var navigationHistory = new Lib.NavigationHistory<TestNavigationItem>(3);
 
             // when
             navigationHistory.Record(TestNavigationItems.HomePage);

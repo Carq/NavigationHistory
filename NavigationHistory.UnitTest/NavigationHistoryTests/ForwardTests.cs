@@ -7,16 +7,16 @@ namespace NavigationHistory.UnitTest.NavigationHistoryTests
 {
     public class ForwardTests : IDisposable
     {
-        private Lib.NavigationHistory _navigationHistory;
+        private Lib.NavigationHistory<TestNavigationItem> _navigationHistory;
 
         public ForwardTests()
         {
-            _navigationHistory = new Lib.NavigationHistory();
+            _navigationHistory = new Lib.NavigationHistory<TestNavigationItem>();
         }
 
         public void Dispose()
         {
-            _navigationHistory = new Lib.NavigationHistory();
+            _navigationHistory = new Lib.NavigationHistory<TestNavigationItem>();
         }
 
         [Fact]
