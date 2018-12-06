@@ -1,6 +1,6 @@
 ﻿using NavigationHistory.Lib;
 
-namespace NavigationHistory.UnitTest
+namespace NavigationHistory.UnitTest.TestData
 {
     public class TestNavigationItem : INavigationHistoryItem
     {

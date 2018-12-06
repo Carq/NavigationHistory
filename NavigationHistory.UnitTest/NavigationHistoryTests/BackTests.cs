@@ -1,14 +1,15 @@
 ﻿using FluentAssertions;
+using NavigationHistory.UnitTest.TestData;
 using System;
 using Xunit;
 
-namespace NavigationHistory.UnitTest
+namespace NavigationHistory.UnitTest.NavigationHistoryTests
 {
-    public class NavigationHistoryUnitTests : IDisposable
+    public class BackTests : IDisposable
     {
         private Lib.NavigationHistory _navigationHistory;
 
-        public NavigationHistoryUnitTests()
+        public BackTests()
         {
             _navigationHistory = new Lib.NavigationHistory();
         }
@@ -19,20 +20,7 @@ namespace NavigationHistory.UnitTest
         }
 
         [Fact]
-        public void BackShouldReturnNull_WhenOnlyOneRecordedItemIsInHistory()
-        {
-            // given
-            _navigationHistory.Record(TestNavigationItems.HomePage);
-
-            // when
-            var result = _navigationHistory.Back();
-
-            // then
-            result.Should().BeNull();
-        }
-
-        [Fact]
-        public void BackShouldReturnFirstInsertedItem_WhenTwoRecordedItemsAreInHistory()
+        public void ShouldReturnFirstInsertedItem_WhenTwoRecordedItemsAreInHistory()
         {
             // given
             _navigationHistory.Record(TestNavigationItems.HomePage);
@@ -46,7 +34,7 @@ namespace NavigationHistory.UnitTest
         }
 
         [Fact]
-        public void SecondBackShouldReturnNull_WhenTwoRecordedItemsAreInHistory()
+        public void BackShouldReturnNull_WhenTwoRecordedItemsAreInHistory()
         {
             // given
             _navigationHistory.Record(TestNavigationItems.HomePage);
@@ -119,13 +107,6 @@ namespace NavigationHistory.UnitTest
         }
 
         [Fact]
-        public void CanMoveBackShouldReturnFalse_WhenNoHistoryIsRecorded()
-        {
-            // given & when & then
-            _navigationHistory.CanMoveBack().Should().BeFalse();
-        }
-
-        [Fact]
         public void BackShouldReturnNull_WhenNoHistoryIsRecorded()
         {
             // given & when & then
@@ -133,23 +114,16 @@ namespace NavigationHistory.UnitTest
         }
 
         [Fact]
-        public void ShouldRemoveOldHistoryItems_WhenHistoryCapacityHasBeenReached()
+        public void BackShouldReturnNull_WhenOnlyOneRecordedItemIsInHistory()
         {
             // given
-            var navigationHistory = new Lib.NavigationHistory(3);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
 
             // when
-            navigationHistory.Record(TestNavigationItems.HomePage);
-            navigationHistory.Record(TestNavigationItems.Page1);
-            navigationHistory.Record(TestNavigationItems.Page2);
-            navigationHistory.Record(TestNavigationItems.Page3);
-            navigationHistory.Record(TestNavigationItems.Page4);
+            var result = _navigationHistory.Back();
 
             // then
-            navigationHistory.Back().Should().Be(TestNavigationItems.Page3);
-            navigationHistory.Back().Should().Be(TestNavigationItems.Page2);
-            navigationHistory.Back().Should().Be(TestNavigationItems.Page1);
-            navigationHistory.Back().Should().BeNull();
+            result.Should().BeNull();
         }
     }
 }

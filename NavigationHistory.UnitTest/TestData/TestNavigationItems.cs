@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NavigationHistory.UnitTest
+namespace NavigationHistory.UnitTest.TestData
 {
     public static class TestNavigationItems
     {
