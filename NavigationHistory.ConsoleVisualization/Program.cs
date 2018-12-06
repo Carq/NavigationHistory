@@ -1,7 +1,7 @@
-﻿using NavigationHistory.ConsoleVisualisation.NavigationPages;
+﻿using NavigationHistory.ConsoleVisualization.NavigationPages;
 using System;
 
-namespace NavigationHistory.ConsoleVisualisation
+namespace NavigationHistory.ConsoleVisualization
 {
     class Program
     {
@@ -65,10 +65,10 @@ namespace NavigationHistory.ConsoleVisualisation
             }
 
             Console.WriteLine();
-            Console.Write($"You are on page");
+            Console.Write($"You are on");
             Console.ForegroundColor = NavigationHistory.CurrentItem.Color;
             Console.Write($" {NavigationHistory.CurrentItem.PageNumber} ");
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write($"page");
             Console.WriteLine();
         }

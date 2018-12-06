@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NavigationHistory.ConsoleVisualisation.NavigationPages
+namespace NavigationHistory.ConsoleVisualization.NavigationPages
 {
     public class HomePage : BasePage
     {

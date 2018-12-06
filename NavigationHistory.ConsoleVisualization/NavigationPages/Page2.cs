@@ -1,7 +1,7 @@
 ﻿using NavigationHistory.Lib;
 using System;
 
-namespace NavigationHistory.ConsoleVisualisation.NavigationPages
+namespace NavigationHistory.ConsoleVisualization.NavigationPages
 {
     public class Page2 : BasePage, INavigationHistoryItem
     {
