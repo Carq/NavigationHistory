@@ -5,14 +5,18 @@ namespace NavigationHistory.Lib
 {
     public class NavigationHistory
     {
-        private readonly Stack<INavigationHistoryItem> _history;
+        private readonly IList<INavigationHistoryItem> _backHistory;
 
         private INavigationHistoryItem _currentItem;
 
-        public NavigationHistory()
+        public NavigationHistory() : this(10)
         {
-            MaxHistorySize = 10;
-            _history = new Stack<INavigationHistoryItem>();
+        }
+
+        public NavigationHistory(int maxHistorySize)
+        {
+            MaxHistorySize = maxHistorySize;
+            _backHistory = new List<INavigationHistoryItem>();
         }
 
         public int MaxHistorySize { get; }
@@ -29,7 +33,12 @@ namespace NavigationHistory.Lib
                 return;
             }
 
-            _history.Push(_currentItem);
+            if (_currentItem != null)
+            {
+                _backHistory.Add(_currentItem);
+                RemoveOldHistoryItem();
+            }
+
             _currentItem = historyItemToRecord;
         }
 
@@ -40,13 +49,33 @@ namespace NavigationHistory.Lib
                 return null;
             }
 
-            _currentItem = _history.Pop();
+            _currentItem = GetLastItemAndRemoteIt();
             return _currentItem;
         }
 
         public bool CanMoveBack()
         {
-            return _history.Count > 0;
+            return _backHistory.Count > 0;
+        }
+
+        private INavigationHistoryItem GetLastItemAndRemoteIt()
+        {
+            if (_backHistory.Count < 1)
+            {
+                return null;
+            }
+
+            var lastItem = _backHistory[_backHistory.Count - 1];
+            _backHistory.Remove(lastItem);
+            return lastItem;
+        }
+
+        private void RemoveOldHistoryItem()
+        {
+            if (_backHistory.Count > MaxHistorySize)
+            {
+                _backHistory.RemoveAt(0);
+            }
         }
     }
 }

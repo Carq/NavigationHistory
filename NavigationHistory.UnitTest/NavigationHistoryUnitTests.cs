@@ -6,26 +6,26 @@ namespace NavigationHistory.UnitTest
 {
     public class NavigationHistoryUnitTests : IDisposable
     {
-        private Lib.NavigationHistory _navigatoryHistory;
+        private Lib.NavigationHistory _navigationHistory;
 
         public NavigationHistoryUnitTests()
         {
-            _navigatoryHistory = new Lib.NavigationHistory();
+            _navigationHistory = new Lib.NavigationHistory();
         }
 
         public void Dispose()
         {
-            _navigatoryHistory = new Lib.NavigationHistory();
+            _navigationHistory = new Lib.NavigationHistory();
         }
 
         [Fact]
         public void BackShouldReturnNull_WhenOnlyOneRecordedItemIsInHistory()
         {
             // given
-            _navigatoryHistory.Record(TestNavigationItems.HomePage);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
 
             // when
-            var result = _navigatoryHistory.Back();
+            var result = _navigationHistory.Back();
 
             // then
             result.Should().BeNull();
@@ -35,11 +35,11 @@ namespace NavigationHistory.UnitTest
         public void BackShouldReturnFirstInsertedItem_WhenTwoRecordedItemsAreInHistory()
         {
             // given
-            _navigatoryHistory.Record(TestNavigationItems.HomePage);
-            _navigatoryHistory.Record(TestNavigationItems.Page1);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
+            _navigationHistory.Record(TestNavigationItems.Page1);
 
             // when
-            var result = _navigatoryHistory.Back();
+            var result = _navigationHistory.Back();
 
             // then
             result.Should().Be(TestNavigationItems.HomePage);
@@ -49,12 +49,12 @@ namespace NavigationHistory.UnitTest
         public void SecondBackShouldReturnNull_WhenTwoRecordedItemsAreInHistory()
         {
             // given
-            _navigatoryHistory.Record(TestNavigationItems.HomePage);
-            _navigatoryHistory.Record(TestNavigationItems.Page1);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
+            _navigationHistory.Record(TestNavigationItems.Page1);
 
             // when
-            var firstBackResult = _navigatoryHistory.Back();
-            var secondBackResult = _navigatoryHistory.Back();
+            var firstBackResult = _navigationHistory.Back();
+            var secondBackResult = _navigationHistory.Back();
 
             // then
             secondBackResult.Should().BeNull();
@@ -64,14 +64,14 @@ namespace NavigationHistory.UnitTest
         public void SecondBackShouldReturnSecondRecordedItem_WhenItemHasBeenRecorderAfterBackInvoke()
         {
             // given
-            _navigatoryHistory.Record(TestNavigationItems.HomePage);
-            _navigatoryHistory.Record(TestNavigationItems.Page1);
-            _navigatoryHistory.Record(TestNavigationItems.Page2);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
+            _navigationHistory.Record(TestNavigationItems.Page1);
+            _navigationHistory.Record(TestNavigationItems.Page2);
 
             // when
-            var firstBackResult = _navigatoryHistory.Back();
-            _navigatoryHistory.Record(TestNavigationItems.Page3);
-            var secondBackResult = _navigatoryHistory.Back();
+            var firstBackResult = _navigationHistory.Back();
+            _navigationHistory.Record(TestNavigationItems.Page3);
+            var secondBackResult = _navigationHistory.Back();
 
             // then
             secondBackResult.Should().Be(TestNavigationItems.Page1);
@@ -81,18 +81,18 @@ namespace NavigationHistory.UnitTest
         public void FourBacksShouldReturnCorrectItems_WhenRecordAndBackAreInvokedAlternately()
         {
             // given
-            _navigatoryHistory.Record(TestNavigationItems.HomePage);
-            _navigatoryHistory.Record(TestNavigationItems.Page1);
-            _navigatoryHistory.Record(TestNavigationItems.Page2);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
+            _navigationHistory.Record(TestNavigationItems.Page1);
+            _navigationHistory.Record(TestNavigationItems.Page2);
 
             // when
-            var firstBackResult = _navigatoryHistory.Back();
-            _navigatoryHistory.Record(TestNavigationItems.Page3);
-            _navigatoryHistory.Record(TestNavigationItems.Page4);
-            var secondBackResult = _navigatoryHistory.Back();
-            var thirdBackResult = _navigatoryHistory.Back();
-            var fourthBackResult = _navigatoryHistory.Back();
-            var fifthBackResult = _navigatoryHistory.Back();
+            var firstBackResult = _navigationHistory.Back();
+            _navigationHistory.Record(TestNavigationItems.Page3);
+            _navigationHistory.Record(TestNavigationItems.Page4);
+            var secondBackResult = _navigationHistory.Back();
+            var thirdBackResult = _navigationHistory.Back();
+            var fourthBackResult = _navigationHistory.Back();
+            var fifthBackResult = _navigationHistory.Back();
 
             // then
             secondBackResult.Should().Be(TestNavigationItems.Page3);
@@ -105,13 +105,13 @@ namespace NavigationHistory.UnitTest
         public void ShouldNotAllowToBack_WhenPage1IsRecordedTwice()
         {
             // given
-            _navigatoryHistory.Record(TestNavigationItems.HomePage);
-            _navigatoryHistory.Record(TestNavigationItems.Page1);
-            _navigatoryHistory.Record(TestNavigationItems.Page1);
+            _navigationHistory.Record(TestNavigationItems.HomePage);
+            _navigationHistory.Record(TestNavigationItems.Page1);
+            _navigationHistory.Record(TestNavigationItems.Page1);
 
             // then
-            var firstBackResult = _navigatoryHistory.Back();
-            var secondBackResult = _navigatoryHistory.Back();
+            var firstBackResult = _navigationHistory.Back();
+            var secondBackResult = _navigationHistory.Back();
 
             // when
             firstBackResult.Should().Be(TestNavigationItems.HomePage);
@@ -122,14 +122,34 @@ namespace NavigationHistory.UnitTest
         public void CanMoveBackShouldReturnFalse_WhenNoHistoryIsRecorded()
         {
             // given & when & then
-            _navigatoryHistory.CanMoveBack().Should().BeFalse();
+            _navigationHistory.CanMoveBack().Should().BeFalse();
         }
 
         [Fact]
         public void BackShouldReturnNull_WhenNoHistoryIsRecorded()
         {
             // given & when & then
-            _navigatoryHistory.Back().Should().BeNull();
+            _navigationHistory.Back().Should().BeNull();
+        }
+
+        [Fact]
+        public void ShouldRemoveOldHistoryItems_WhenHistoryCapacityHasBeenReached()
+        {
+            // given
+            var navigationHistory = new Lib.NavigationHistory(3);
+
+            // when
+            navigationHistory.Record(TestNavigationItems.HomePage);
+            navigationHistory.Record(TestNavigationItems.Page1);
+            navigationHistory.Record(TestNavigationItems.Page2);
+            navigationHistory.Record(TestNavigationItems.Page3);
+            navigationHistory.Record(TestNavigationItems.Page4);
+
+            // then
+            navigationHistory.Back().Should().Be(TestNavigationItems.Page3);
+            navigationHistory.Back().Should().Be(TestNavigationItems.Page2);
+            navigationHistory.Back().Should().Be(TestNavigationItems.Page1);
+            navigationHistory.Back().Should().BeNull();
         }
     }
 }
