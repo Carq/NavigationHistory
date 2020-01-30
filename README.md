@@ -16,4 +16,4 @@ navigationHistory.Back();     // TestNavigationItems.HomePage
 navigationHistory.CurrentItem; // TestNavigationItems.HomePage
 ```
 
-![Console visualization](http://oi68.tinypic.com/ekp06d.jpg)
+![Console visualization](demo.png)
